@@ -4,6 +4,7 @@ import com.finflow.dto.request.RegisterRequest;
 import com.finflow.dto.response.RegisterResponse;
 import com.finflow.entity.User;
 import com.finflow.enums.Role;
+import com.finflow.exception.EmailAlreadyExistsException;
 import com.finflow.repository.UserRepository;
 import com.finflow.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
     public RegisterResponse register(RegisterRequest request) {
 
         if(userRepository.findByEmail(request.getEmail()).isPresent()){
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
             User user = new User();
