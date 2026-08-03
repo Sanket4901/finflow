@@ -1,6 +1,7 @@
 package com.finflow.exception;
 
 
+import com.finflow.dto.response.LoginResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,4 +19,12 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());
 
     }
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> invalidCredetials(InvalidCredentialsException inv){
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(inv.getMessage());
+        }
+
+
 }

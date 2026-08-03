@@ -1,15 +1,14 @@
 package com.finflow.controller;
 
 
+import com.finflow.dto.request.LoginRequest;
 import com.finflow.dto.request.RegisterRequest;
+import com.finflow.dto.response.LoginResponse;
 import com.finflow.dto.response.RegisterResponse;
 import com.finflow.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +21,9 @@ public class AuthController {
             @Valid @RequestBody RegisterRequest request) {
 
         return authService.register(request);
+    }
+    @GetMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request){
+        return authService.login(request);
     }
 }

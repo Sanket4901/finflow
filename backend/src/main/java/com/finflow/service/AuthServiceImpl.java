@@ -1,10 +1,13 @@
 package com.finflow.service;
 
+import com.finflow.dto.request.LoginRequest;
 import com.finflow.dto.request.RegisterRequest;
+import com.finflow.dto.response.LoginResponse;
 import com.finflow.dto.response.RegisterResponse;
 import com.finflow.entity.User;
 import com.finflow.enums.Role;
 import com.finflow.exception.EmailAlreadyExistsException;
+import com.finflow.exception.InvalidCredentialsException;
 import com.finflow.repository.UserRepository;
 import com.finflow.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
 //    public AuthServiceImpl(UserRepository userRepository) {
 //        this.userRepository = userRepository;
@@ -46,5 +50,22 @@ public class AuthServiceImpl implements AuthService {
                 .message("User registered successfully")
                 .build();
 
+    }
+    public LoginResponse login(LoginRequest request){
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new InvalidCredentialsException("User not found"));
+
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
+
+            throw new InvalidCredentialsException("Invalid email or password");
+        }
+        String token = jwtService.generateToken(user.getEmail());
+        return LoginResponse.builder()
+                .token(token)
+                .type("Bearer")
+                .message("Login successful")
+                .build();
     }
 }
